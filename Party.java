@@ -3,7 +3,6 @@ import java.util.ArrayList;
 public class Party {
     private ArrayList<Player> players;
     private GameMode mode;
-    private boolean customMatch;
     private boolean open;
 
     public Party(GameMode mode){
@@ -13,7 +12,6 @@ public class Party {
     }
     public Party(GameMode mode, boolean customMatch){
         this.mode = mode;
-        this.customMatch = customMatch;
         this.players = new ArrayList<>();
         open = !customMatch;
     }
@@ -33,9 +31,9 @@ public class Party {
         }
     }
     public void readyParty(){
+        open = !open;
         MatchMaker.getInstance().joinQueue(new QueueTicket(this));
     }
-    
     public int getPartySize(){
         return players.size();
     }
@@ -43,11 +41,11 @@ public class Party {
     @Override
     public String toString(){
         StringBuilder sb = new StringBuilder();
-        sb.append("Party Mode: ").append(mode).append("\n");
-        sb.append("Players:\n");
+        sb.append("Players: ");
         for(Player player : players){
-            sb.append(" - ").append(player).append("\n");
+            sb.append(", ").append(player);
         }
-        return sb.toString();
+
+        return sb.append("\n").toString();
     }
 }

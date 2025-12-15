@@ -4,16 +4,24 @@ public class Player {
     private PlayerState state;
     private final int WIN_INCREASE = 75;
 
+    private final int JOIN_WAIT_TIME = 0;
+
     public Player(String username){
         this.username = username;
     }
     public Player(String username, int rating){
         this.username = username;
         this.rating = rating;
-
     }
+
     public int getRating(){
         return this.rating;
+    }
+    public String getUsername() {
+        return this.username;
+    }
+    public PlayerState getState() {
+        return this.state;
     }
     public void increaseRating(){
         this.rating += WIN_INCREASE;

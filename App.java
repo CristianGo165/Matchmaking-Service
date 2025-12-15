@@ -1,6 +1,8 @@
 public class App {
     public static void main(String[] args){
-        MatchMaker.getInstance().initializeSimulation(20);
+        PlayerDatabase.getInstance().populatePlayerDatabase(2000);
+        System.out.println(PlayerDatabase.getInstance().getRandomBatch(30));
+        //MatchMaker.getInstance().initializeSimulation(200);
         //MatchMaker.getInstance().start();
     }
 }

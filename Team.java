@@ -33,8 +33,13 @@ public class Team{
 
     @Override
     public String toString(){
-        return "Team{" +
-                "parties=" + parties +
-                '}';
+        String result = "-----Team-----\n";
+        int i = 1;
+        for(Party p : parties){
+            result += "\t Party #" + i + ": " + p;
+            i++;
+        }
+
+        return result;
     }
 }

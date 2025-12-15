@@ -2,7 +2,6 @@ import observer_pattern.Observer;
 
 public class QueueTicket implements Comparable<QueueTicket>, Observer {
     private static final double MAX_WAIT_TIME = 350.0; //Seconds
-    private double dynamicTolerance;
     private double waitTime;
     private Party party;
     private double averageRating;
@@ -12,6 +11,7 @@ public class QueueTicket implements Comparable<QueueTicket>, Observer {
         this.party = party;
         this.averageRating = party.calculateAverageRating();
         this.TIME_STAMP = System.currentTimeMillis();
+        this.waitTime = (int) (Math.random() * 350);
         subscribeToTickEvent();
     }
     public GameMode getGameMode(){
@@ -59,7 +59,6 @@ public class QueueTicket implements Comparable<QueueTicket>, Observer {
         return "QueueTicket{" +
                 "party=" + party +
                 ", averageRating=" + averageRating +
-                ", dynamicTolerance=" + dynamicTolerance +
                 ", priorityScore=" + calculatePriorityScore() +
                 '}';
     }
