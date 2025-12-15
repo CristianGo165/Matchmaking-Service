@@ -1,5 +1,6 @@
 public class App {
     public static void main(String[] args){
-        MatchMaker.getInstance().start();
+        MatchMaker.getInstance().initializeSimulation(20);
+        //MatchMaker.getInstance().start();
     }
 }

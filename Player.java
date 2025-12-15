@@ -30,4 +30,9 @@ public class Player {
     public void joinParty(Party partyID){
 
     }
+
+    @Override
+    public String toString(){
+        return "Player{" + "username=" + username + ", rating=" + rating + "}";
+    }
 }
