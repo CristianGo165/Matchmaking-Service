@@ -20,6 +20,11 @@ public class QueueTicket implements Comparable<QueueTicket>, Observer {
     public double averageRating(){
         return this.averageRating;
     }
+
+    public void drawn(){
+        unsubscribeFromTickEvent();
+    }
+    
     private void subscribeToTickEvent(){
         MatchMaker.tickEvent.add(this);
     }

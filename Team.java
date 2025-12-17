@@ -36,9 +36,10 @@ public class Team{
         String result = "-----Team-----\n";
         int i = 1;
         for(Party p : parties){
-            result += "\t Party #" + i + ": " + p;
-            i++;
+            result += "\t Party #" + i + ": " + p + "\n";
+            i++;    
         }
+        result += "\t Average Team Rating: " + getAvgTeamRating() + "\n";
 
         return result;
     }

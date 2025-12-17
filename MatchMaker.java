@@ -28,11 +28,19 @@ public class MatchMaker {
         tickEvent = new Event();
     }
     private void tick(){
-        System.out.println("Pulse");
+        //System.out.println("Pulse");
 
 
         //updates ticket wait time
         tickEvent.alert();
+
+        rebuildQueues();
+
+        //DEBUG LOG MATCHES
+        for(GameMode mode : GameMode.values()){
+            System.out.println(mode.name() + " Match: \n\t" + buildMatch(mode));
+        }
+        //DEBUG LOG MATCHES
     }
 
     public void initializeSimulation(ArrayList<Player> batch, boolean debugRandomParties){
@@ -48,11 +56,7 @@ public class MatchMaker {
                 players.add(batch.remove(0));
             }
 
-            makeRandomSizedParties(new ArrayList<>(players.subList(0, numPlayersPerMode)), mode);
-
-            //DEBUG LOG MATCHES
-            System.out.println(mode.name() + " Match: \n\t" + buildMatch(mode));
-            //DEBUG LOG MATCHES
+            makeRandomSizedParties(players, mode);
         }
 
         //Starts Loop
@@ -74,11 +78,7 @@ public class MatchMaker {
             p.readyParty();
         }
 
-        for(GameMode mode : GameMode.values()){
-            //DEBUG LOG MATCHES
-            System.out.println(mode.name() + " Match: \n\t" + buildMatch(mode));
-            //DEBUG LOG MATCHES
-        }
+        
 
         //Starts Loop
         double startTime = System.currentTimeMillis();
@@ -102,7 +102,10 @@ public class MatchMaker {
 
         ArrayList<Party> partyPool = new ArrayList<>();
         for(int i = 0 ; i < MATCH_POOL_SIZE && !queue.isEmpty() ; i++){
-            partyPool.add(queue.poll().getParty());
+            QueueTicket t = queue.poll();
+            if(t == null) break;
+            t.drawn();
+            partyPool.add(t.getParty());
         }
         return partyPool;
     }
@@ -151,6 +154,11 @@ public class MatchMaker {
             }
         }
 
+        //puts unchosen parties back in the queue
+        for(Party p : partyPool){
+            p.readyParty();
+        }
+
         //Returns the Best Team
         return result;
     }
@@ -175,6 +183,23 @@ public class MatchMaker {
         }
     }
 
+    public void rebuildQueues(){
+        Map<GameMode, PriorityQueue<QueueTicket>> newQueues = new HashMap<>();
+        for(GameMode mode : GameMode.values()){
+            newQueues.put(mode, new PriorityQueue<>(new TicketComparator()));
+        }
+
+        for(GameMode mode : GameMode.values()){
+            PriorityQueue<QueueTicket> oldQueue = ticketQueues.get(mode);
+            PriorityQueue<QueueTicket> newQueue = newQueues.get(mode);
+
+            while(!oldQueue.isEmpty()){
+                newQueue.add(oldQueue.poll());
+            }
+        }
+
+        ticketQueues = newQueues;
+    }
 
     //DEBUGGING METHODS
     public void debugLogTickets(){
