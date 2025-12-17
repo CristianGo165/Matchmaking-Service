@@ -1,5 +1,5 @@
 public enum PlayerState {
-    LOBBY,
+    OFFLINE,
     WAITING,
     PLAYING
 }

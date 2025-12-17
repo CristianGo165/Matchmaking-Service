@@ -8,10 +8,18 @@ public class Player {
 
     public Player(String username){
         this.username = username;
+        this.state = PlayerState.OFFLINE;
+
     }
     public Player(String username, int rating){
         this.username = username;
         this.rating = rating;
+        this.state = PlayerState.OFFLINE;
+    }
+    public Player(String username, int rating, PlayerState state){
+        this.username = username;
+        this.rating = rating;
+        this.state = state;
     }
 
     public int getRating(){
@@ -22,6 +30,9 @@ public class Player {
     }
     public PlayerState getState() {
         return this.state;
+    }
+    public void setState(PlayerState state){
+        this.state = state;
     }
     public void increaseRating(){
         this.rating += WIN_INCREASE;
@@ -41,6 +52,6 @@ public class Player {
 
     @Override
     public String toString(){
-        return "Player{" + "username=" + username + ", rating=" + rating + "}";
+        return "Player{" + "username=" + username + ", rating=" + rating + ", state=" + state + "}";
     }
 }

@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Hashtable;
 
@@ -32,16 +33,19 @@ public class PlayerDatabase {
 //        System.out.println(usernames);
     }
     public ArrayList<Player> getRandomBatch(int numPlayers){
-        ArrayList<Player> players = new ArrayList<>();
-        for(int i = 0 ; i < numPlayers ; i++){
-            int randomUser = (int) (Math.random() * database.size());
-            while(usernames.get(randomUser) != null &&
-                    (database.get(usernames.get(randomUser)).getState() != PlayerState.PLAYING ||
-                            database.get(usernames.get(randomUser)).getState() != PlayerState.LOBBY)){
-                players.add(database.get(usernames.get(randomUser)));
-            }
-        }
-        return players;
+        ArrayList<Player> databaseList = new ArrayList<>(database.values());
+
+        Collections.shuffle(databaseList);
+
+        return new ArrayList<>(databaseList.subList(0, Math.min(numPlayers, databaseList.size())));
     }
 
+    public Player getPlayer(String username){
+        return database.get(username);
+    }
+
+    public Player registerPlayer(String username){
+        if(database.get(username) != null) throw new IllegalArgumentException("PLAYER IS ALREADY REGISTERED");
+        return database.put(username, new Player(username));
+    }
 }

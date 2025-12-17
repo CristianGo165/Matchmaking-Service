@@ -27,8 +27,35 @@ public class MatchMaker {
         }
         tickEvent = new Event();
     }
+    private void tick(){
+        System.out.println("Pulse");
 
-    public void start(){
+
+        //updates ticket wait time
+        tickEvent.alert();
+    }
+
+    public void initializeSimulation(ArrayList<Player> batch, boolean debugRandomParties){
+
+        //Gets the number of players that should be in every mode given the batch size
+        int numPlayersPerMode = batch.size()/GameMode.values().length;
+
+        //Makes random sized parties for each mode
+        for(GameMode mode : GameMode.values()){
+            ArrayList<Player> players = new ArrayList<>();
+
+            for(int i = 0 ; i < numPlayersPerMode && !batch.isEmpty(); i++){
+                players.add(batch.remove(0));
+            }
+
+            makeRandomSizedParties(new ArrayList<>(players.subList(0, numPlayersPerMode)), mode);
+
+            //DEBUG LOG MATCHES
+            System.out.println(mode.name() + " Match: \n\t" + buildMatch(mode));
+            //DEBUG LOG MATCHES
+        }
+
+        //Starts Loop
         double startTime = System.currentTimeMillis();
         double currentTime;
         while(true){
@@ -39,31 +66,29 @@ public class MatchMaker {
             }
         }
     }
-    private void tick(){
-        System.out.println("Pulse");
-    }
 
-    public void initializeSimulation(int numPlayersPerMode){
+    public void initializeSimulation(ArrayList<Party> parties){
+
+        //"Readies" each of the parties in the list if they already aren't
+        for(Party p : parties){
+            p.readyParty();
+        }
 
         for(GameMode mode : GameMode.values()){
-            ArrayList<Player> players = new ArrayList<>();
-            for(int i = 0 ; i < numPlayersPerMode ; i++){
-                Player player = new Player("Player_" + mode.name() + "_" + i, 1000 + (int)(Math.random() * 1000));
-                players.add(player);
-            }
-            while(!players.isEmpty()){
-                Party party = new Party(mode);
-                int partySize = (int)(Math.random() * ((mode.getMaxTeamSize()) - 1)) + 1;
-                for(int i = 0 ; i < partySize && !players.isEmpty() ; i++){
-//                    party.addPlayer(players.removeFirst());
-                    party.addPlayer(players.remove(0));
-                }
-                party.readyParty();
-            }
-
             //DEBUG LOG MATCHES
             System.out.println(mode.name() + " Match: \n\t" + buildMatch(mode));
             //DEBUG LOG MATCHES
+        }
+
+        //Starts Loop
+        double startTime = System.currentTimeMillis();
+        double currentTime;
+        while(true){
+            currentTime = System.currentTimeMillis();
+            if(currentTime - startTime >= TICK){
+                tick();
+                startTime = System.currentTimeMillis();
+            }
         }
     }
     public synchronized void joinQueue(QueueTicket ticket){
@@ -84,6 +109,7 @@ public class MatchMaker {
     public ArrayList<Team> buildMatch(GameMode mode){
 
         //Gets the top elements from the priority queue
+
         ArrayList<Party> partyPool = buildMatchPool(mode);
 
         //Builds a list of valid teams
@@ -113,8 +139,17 @@ public class MatchMaker {
         if (result.isEmpty()) {
             return null;
         }
+
         validTeams.remove(result.get(0));
         validTeams.remove(result.get(1));
+
+        //Removes chosen parties from party pool
+        for(Team t : validTeams){
+            for(Party p : t.getParties()){
+                p.setAllPlayerStates(PlayerState.PLAYING);
+                partyPool.remove(p);
+            }
+        }
 
         //Returns the Best Team
         return result;
@@ -152,6 +187,22 @@ public class MatchMaker {
                  i++;
              }
          }
+    }
+
+    public void makeRandomSizedParties(ArrayList<Player> players, GameMode mode){
+        while(!players.isEmpty()){
+
+            //Makes randomly sized parties within the size for the game mode until the given list of players is empty
+            Party party = new Party(mode);
+            int partySize = (int)(Math.random() * ((mode.getMaxTeamSize()) - 1)) + 1;
+            for(int i = 0 ; i < partySize && !players.isEmpty() ; i++){
+//                    party.addPlayer(players.removeFirst());
+                party.addPlayer(players.remove(0));
+            }
+
+            //Puts Parties in a ticket
+            party.readyParty();
+        }
     }
     //DEBUGGING METHODS
 }

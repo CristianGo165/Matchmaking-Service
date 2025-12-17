@@ -26,8 +26,24 @@ public class Party {
         return result/players.size();
     }
     public void addPlayer(Player player){
+        if(player.getState().equals(PlayerState.WAITING) || player.getState().equals(PlayerState.PLAYING))
+            throw new IllegalArgumentException("UNABLE TO ADD [" + player.getUsername() + "] TO PARTY");
+
         if(open){
+            player.setState(PlayerState.WAITING);
             players.add(player);
+        } else{
+            throw new IllegalStateException("PARTY IS FULL");
+        }
+
+        if(players.size() >= mode.getMaxTeamSize()){
+            open = false;
+            readyParty();
+        }
+    }
+    public void setAllPlayerStates(PlayerState state){
+        for(Player p : players){
+            p.setState(state);
         }
     }
     public void readyParty(){
