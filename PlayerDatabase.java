@@ -1,7 +1,6 @@
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Hashtable;
 
 public class PlayerDatabase {
     private static PlayerDatabase instance = null;
@@ -44,15 +43,12 @@ public class PlayerDatabase {
 
     public void populatePlayerDatabase(int numPlayers){
         database.clear();
-        ArrayList<Player> players = new ArrayList<>();
         for(int i = 0 ; i < numPlayers ; i++){
             Player player = new Player("Player_" + playerIdentifier, 1000 + (int)(Math.random() * 3000));
             database.put(player.getUsername(), player);
             usernames.put(playerIdentifier, (player.getUsername()));
             playerIdentifier++;
         }
-//        System.out.println(database);
-//        System.out.println(usernames);
     }
 
     public ArrayList<Player> getRandomBatch(int numPlayers){

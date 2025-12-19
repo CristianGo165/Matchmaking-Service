@@ -1,9 +1,9 @@
 import java.util.ArrayList;
 
 public class Match {
-    private Team teamOne;
-    private Team teamTwo;
-    private GameMode mode;
+    private final Team teamOne;
+    private final Team teamTwo;
+    private final GameMode mode;
 
     public Match(GameMode mode, Team teamOne, Team teamTwo){
         this.teamOne = teamOne;
@@ -42,7 +42,7 @@ public class Match {
         // Format Team One
         sb.append(" [TEAM 1] (Avg: ").append(teamOne.getAvgTeamRating()).append(")\n");
         for (Party p : teamOne.getParties()) {
-            sb.append("   • ").append(p.getPlayers()).append("\n");
+            sb.append("   - ").append(p.getPlayers()).append("\n");
         }
 
         sb.append("\n VS \n\n");
@@ -50,7 +50,7 @@ public class Match {
         // Format Team Two
         sb.append(" [TEAM 2] (Avg: ").append(teamTwo.getAvgTeamRating()).append(")\n");
         for (Party p : teamTwo.getParties()) {
-            sb.append("   • ").append(p.getPlayers()).append("\n");
+            sb.append("   - ").append(p.getPlayers()).append("\n");
         }
 
         sb.append(separator).append("\n");

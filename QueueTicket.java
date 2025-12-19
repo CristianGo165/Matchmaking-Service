@@ -19,6 +19,11 @@ public class QueueTicket {
         this.party.setTempTimeStamp(TIME_STAMP);
     }
 
+    public static QueueTicket createWithRandomTimestamp(Party party, double maxOffsetMillis) {
+        double randomTimeStamp = System.currentTimeMillis() - (Math.random() * maxOffsetMillis);
+        return new QueueTicket(party, randomTimeStamp);
+    }
+
     public Party getParty(){
         return this.party;
     }

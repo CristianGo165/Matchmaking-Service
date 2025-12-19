@@ -140,7 +140,7 @@ public class App {
     private static Party createPartyOfSize(GameMode mode, int size, int rating, String prefix) {
         Party p = new Party(mode);
         for (int i = 0; i < size; i++) {
-            p.addPlayer(new Player(prefix + i + "_" + Math.random(), rating, PlayerState.OFFLINE));
+            p.addPlayer(new Player(prefix + i + "_" + (int) (Math.random()*1000), rating, PlayerState.OFFLINE));
         }
         return p;
     }

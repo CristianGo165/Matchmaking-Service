@@ -1,3 +1,7 @@
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -15,8 +19,10 @@ public class MatchMaker {
     }
     private MatchMaker(){
         this.ticketQueues = new HashMap<>();
+        this.matches = new HashMap<>();
         for(GameMode mode : GameMode.values()){
             ticketQueues.put(mode, new PriorityQueue<>(new TicketComparator()));
+            matches.put(mode, new ArrayList<>());
         }
         running = true;
     }
@@ -27,6 +33,7 @@ public class MatchMaker {
     //Match will not be formed if rating difference is too high
     public static final int MAX_MATCH_DISPARITY = 500;
     private Map<GameMode, PriorityQueue<QueueTicket>> ticketQueues;
+    private final Map<GameMode, ArrayList<Match>> matches;
     private boolean running;
 
     private void tick(){
@@ -47,6 +54,7 @@ public class MatchMaker {
                 System.out.println("\n\tNO " + mode + " MATCH FOUND (NOT ENOUGH PLAYERS)");
                 nullMatches++;
             } else{
+                matches.get(mode).add(m);
                 System.out.println("\n" + m.toString().indent(4));
             }
         }
@@ -71,6 +79,10 @@ public class MatchMaker {
         //Clears priority queues
         for(PriorityQueue<QueueTicket> pq : ticketQueues.values()){
             pq.clear();
+        }
+        //Clears matches
+        for(ArrayList<Match> m : matches.values()){
+            m.clear();
         }
 
         //Gets the number of players that should be in every mode given the batch size
@@ -101,6 +113,32 @@ public class MatchMaker {
     private void endSimulation(){
         running = false;
         System.out.println("=== ENDING TICK LOGIC SIMULATION ===");
+
+        String content = "=== MATCHES FROM SIMULATION ===\n\n";
+        String leftovers = "=== LEFTOVER PARTIES FROM SIMULATION ===\n\n";
+        Path file = Paths.get("Matches.txt");
+        int numberMatches = 0;
+        int numberLeftoverParties = 0;
+
+        try {
+            for(GameMode mode : GameMode.values()){
+                numberMatches += matches.get(mode).size();
+                content += "Matches for " + mode + ":\n";
+                for(Match m : matches.get(mode)){
+                    content += m.toString() + "\n";
+                }
+                for(QueueTicket t : ticketQueues.get(mode)){
+                    leftovers += t.getParty().toString() + "\n";
+                    numberLeftoverParties++;
+                }
+
+            }
+            Files.writeString(file, content + "\n" + leftovers + "\n\nNumber of Matches: " + numberMatches + "\nNumber of Leftover Parties: " + numberLeftoverParties); 
+            System.out.println("Text successfully written to the file.");
+
+        } catch (IOException e) {
+            System.err.println("An error occurred while writing to the file: " + e.getMessage());
+        }
     }
 
     public void initialize(ArrayList<Party> parties){
@@ -265,7 +303,7 @@ public class MatchMaker {
             }
 
             //Puts Parties in a ticket
-            party.readyParty();
+            party.readyPartyRandom(30000);
         }
     }
 

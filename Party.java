@@ -83,6 +83,14 @@ public class Party {
         MatchMaker.getInstance().joinQueue(new QueueTicket(this, tempTimeStamp));
     }
 
+    public void readyPartyRandom(double maxOffsetMillis)
+    {
+        if(status.equals(PartyStatus.SEARCHING)) throw new IllegalCallerException("CANNOT READY PARTY");
+        status = PartyStatus.SEARCHING;
+        open = !open;
+        MatchMaker.getInstance().joinQueue(QueueTicket.createWithRandomTimestamp(this, maxOffsetMillis));
+    }
+
     public void setTempTimeStamp(double timeStamp){
         this.tempTimeStamp = timeStamp;
     }
