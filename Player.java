@@ -1,21 +1,21 @@
 public class Player {
+    private final int WIN_INCREASE = 75;
+    private PlayerState state;
     private String username;
     private int rating;
-    private PlayerState state;
-    private final int WIN_INCREASE = 75;
-
-    private final int JOIN_WAIT_TIME = 0;
 
     public Player(String username){
         this.username = username;
         this.state = PlayerState.OFFLINE;
 
     }
+
     public Player(String username, int rating){
         this.username = username;
         this.rating = rating;
         this.state = PlayerState.OFFLINE;
     }
+
     public Player(String username, int rating, PlayerState state){
         this.username = username;
         this.rating = rating;
@@ -25,29 +25,25 @@ public class Player {
     public int getRating(){
         return this.rating;
     }
+
     public String getUsername() {
         return this.username;
     }
+
     public PlayerState getState() {
         return this.state;
     }
+
     public void setState(PlayerState state){
         this.state = state;
     }
+
     public void increaseRating(){
         this.rating += WIN_INCREASE;
     }
+
     public void increaseRating(int increment){
         this.rating += increment;
-    }
-    public void updatePlayerState(PlayerState state){
-        this.state = state;
-    }
-    public void createParty(GameMode mode, boolean custom){
-
-    }
-    public void joinParty(Party partyID){
-
     }
 
     @Override

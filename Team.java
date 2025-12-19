@@ -6,18 +6,28 @@ public class Team{
 
     public Team(){
         this.parties = new ArrayList<>();
-        rating = getAvgTeamRating();
+        rating = calcAvgTeamRating();
     }
+
     public Team(Team team){
         this.parties = new ArrayList<>(team.parties);
-        rating = getAvgTeamRating();
+        rating = calcAvgTeamRating();
     }
+
     public void addParty(Party party){
         this.parties.add(party);
+        this.rating = calcAvgTeamRating();
+
     }
+
     public ArrayList<Party> getParties(){
         return this.parties;
     }
+
+    public int getAvgTeamRating(){
+        return this.rating;
+    }
+
     private int calcAvgTeamRating(){
         int totalRating = 0;
         int totalPlayers = 0;
@@ -25,10 +35,8 @@ public class Team{
             totalRating += party.calculateAverageRating() * party.getPartySize();
             totalPlayers += party.getPartySize();
         }
+        if(totalRating == 0 && totalPlayers == 0) return 0;
         return totalRating / totalPlayers;
-    }
-    public int getAvgTeamRating(){
-        return this.rating;
     }
 
     @Override
