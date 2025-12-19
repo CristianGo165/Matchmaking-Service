@@ -4,27 +4,45 @@ public class Party {
     private ArrayList<Player> players;
     private GameMode mode;
     private boolean open;
+    private PartyStatus status;
+    private double tempTimeStamp = 0;
 
     public Party(GameMode mode){
         this.mode = mode;
         this.players = new ArrayList<>();
         open = true;
+        status = PartyStatus.WAITING;
     }
+
     public Party(GameMode mode, boolean customMatch){
         this.mode = mode;
         this.players = new ArrayList<>();
         open = !customMatch;
+        status = PartyStatus.WAITING;
+
     }
+
+    public ArrayList getPlayers(){
+        return this.players;
+    }
+
     public GameMode getMode(){
         return this.mode;
     }
+
+    public int getPartySize(){
+        return players.size();
+    }
+
     public int calculateAverageRating(){
         int result = 0;
         for(Player player : players){
             result += player.getRating();
         }
+        if(result == 0 && players.size() == 0) return -1;
         return result/players.size();
     }
+
     public void addPlayer(Player player){
         if(player.getState().equals(PlayerState.WAITING) || player.getState().equals(PlayerState.PLAYING))
             throw new IllegalArgumentException("UNABLE TO ADD [" + player.getUsername() + "] TO PARTY");
@@ -38,20 +56,35 @@ public class Party {
 
         if(players.size() >= mode.getMaxTeamSize()){
             open = false;
-            readyParty();
         }
     }
+
     public void setAllPlayerStates(PlayerState state){
         for(Player p : players){
             p.setState(state);
         }
     }
+
+    public void setToWaiting(){
+        this.status = PartyStatus.WAITING;
+    }
+
     public void readyParty(){
+        if(status.equals(PartyStatus.SEARCHING)) throw new IllegalCallerException("CANNOT READY PARTY");
+        status = PartyStatus.SEARCHING;
         open = !open;
         MatchMaker.getInstance().joinQueue(new QueueTicket(this));
     }
-    public int getPartySize(){
-        return players.size();
+
+    public void reReadyParty(){
+        if(status.equals(PartyStatus.SEARCHING)) throw new IllegalCallerException("CANNOT RE-READY PARTY THAT HAS NOT BEEN INITIALLY READIED");
+        status = PartyStatus.SEARCHING;
+        open = !open;
+        MatchMaker.getInstance().joinQueue(new QueueTicket(this, tempTimeStamp));
+    }
+
+    public void setTempTimeStamp(double timeStamp){
+        this.tempTimeStamp = timeStamp;
     }
 
     @Override
@@ -63,5 +96,9 @@ public class Party {
         }
 
         return sb.append("\n").toString();
+    }
+
+    private enum PartyStatus{
+        SEARCHING, WAITING
     }
 }
