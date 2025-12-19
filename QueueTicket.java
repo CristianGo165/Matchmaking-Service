@@ -1,9 +1,9 @@
 
 public class QueueTicket {
+    private final Party party;
     private static final double WAIT_TIME_CONST = 5;
-    private double waitTime;
-    private Party party;
     private final double TIME_STAMP;
+    private double waitTime;
 
     public QueueTicket(Party party){
         this.party = party;

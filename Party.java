@@ -1,11 +1,11 @@
 import java.util.ArrayList;
 
 public class Party {
-    private ArrayList<Player> players;
-    private GameMode mode;
-    private boolean open;
+    private final ArrayList<Player> players;
+    private final GameMode mode;
     private PartyStatus status;
     private double tempTimeStamp = 0;
+    private boolean open;
 
     public Party(GameMode mode){
         this.mode = mode;
@@ -22,7 +22,7 @@ public class Party {
 
     }
 
-    public ArrayList getPlayers(){
+    public ArrayList<Player> getPlayers(){
         return this.players;
     }
 
@@ -34,12 +34,12 @@ public class Party {
         return players.size();
     }
 
-    public int calculateAverageRating(){
-        int result = 0;
+    public double calculateAverageRating(){
+        double result = 0;
         for(Player player : players){
             result += player.getRating();
         }
-        if(result == 0 && players.size() == 0) return -1;
+        if(result == 0 && players.isEmpty()) return -1;
         return result/players.size();
     }
 

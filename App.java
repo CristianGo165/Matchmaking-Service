@@ -1,6 +1,4 @@
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.PriorityQueue;
 
 public class App {
@@ -13,7 +11,7 @@ public class App {
     private static void testComponentLevel() {
         System.out.println("=== 1. COMPONENT TESTS (UNIT TESTS) ===");
         PlayerDatabase db = PlayerDatabase.getInstance();
-        MatchMaker mmr = MatchMaker.getInstance();
+        MatchMaker.getInstance();
 
         // 1.1 PlayerDatabase: Register and Get
         System.out.println("\n[TEST] PlayerDatabase Registration:");

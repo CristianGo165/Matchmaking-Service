@@ -1,7 +1,7 @@
 public class Player {
     private final int WIN_INCREASE = 75;
     private PlayerState state;
-    private String username;
+    private final String username;
     private int rating;
 
     public Player(String username){

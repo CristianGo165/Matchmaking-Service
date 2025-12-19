@@ -24,7 +24,6 @@ public class MatchMaker {
     private static final double TICK = 5000; //Milliseconds
     //Number of players taken from the priority queue when building teams
     private static final int MATCH_POOL_SIZE = 10;
-
     //Match will not be formed if rating difference is too high
     public static final int MAX_MATCH_DISPARITY = 500;
     private Map<GameMode, PriorityQueue<QueueTicket>> ticketQueues;

@@ -1,7 +1,7 @@
 import java.util.ArrayList;
 
 public class Team{
-    private ArrayList<Party> parties;
+    private final ArrayList<Party> parties;
     private int rating;
 
     public Team(){
